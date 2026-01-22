@@ -1,7 +1,10 @@
 import { AuthContext } from "@/utils/authContext";
+import { supabase } from "@/utils/supabase";
 import { useContext, useState } from "react";
 import {
+    KeyboardAvoidingView,
     Platform,
+    ScrollView,
     StatusBar,
     StyleSheet,
     Text,
@@ -15,75 +18,95 @@ export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // You can add authentication logic here
     // For now, we'll just call the auth context login
-    authContext.login();
+    const { data } = await supabase
+      .from("User")
+      .select("*")
+      .eq("name", username)
+      .eq("password", password)
+      .single();
+    if (data) {
+      authContext.login();
+    } else {
+      alert("Invalid username or password");
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+    >
       <StatusBar barStyle="dark-content" backgroundColor="#FF6B6B" />
-      <View style={styles.content}>
-        {/* Title */}
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>FITNESS</Text>
-          <Text style={styles.subtitle}>LOGIN</Text>
-        </View>
-
-        {/* Login Form */}
-        <View style={styles.formContainer}>
-          {/* Username Field */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>USERNAME</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                value={username}
-                onChangeText={setUsername}
-                placeholder="Enter username"
-                placeholderTextColor="#666"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-            </View>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.content}>
+          {/* Title */}
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>FITNESS</Text>
+            <Text style={styles.subtitle}>LOGIN</Text>
           </View>
 
-          {/* Password Field */}
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>PASSWORD</Text>
-            <View style={styles.inputWrapper}>
-              <TextInput
-                style={styles.input}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Enter password"
-                placeholderTextColor="#666"
-                secureTextEntry={true}
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
+          {/* Login Form */}
+          <View style={styles.formContainer}>
+            {/* Username Field */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>USERNAME</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  value={username}
+                  onChangeText={setUsername}
+                  placeholder="Enter username"
+                  placeholderTextColor="#666"
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
             </View>
+
+            {/* Password Field */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>PASSWORD</Text>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.input}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Enter password"
+                  placeholderTextColor="#666"
+                  secureTextEntry={true}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+            </View>
+
+            {/* Login Button */}
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={handleLogin}
+              activeOpacity={0.8}
+            >
+              <Text style={styles.loginButtonText}>LOGIN</Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Login Button */}
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleLogin}
-            activeOpacity={0.8}
-          >
-            <Text style={styles.loginButtonText}>LOGIN</Text>
-          </TouchableOpacity>
+          {/* Decorative Elements */}
+          <View style={styles.decorativeContainer}>
+            <View style={styles.decorativeBox1} />
+            <View style={styles.decorativeBox2} />
+            <View style={styles.decorativeBox3} />
+          </View>
         </View>
-
-        {/* Decorative Elements */}
-        <View style={styles.decorativeContainer}>
-          <View style={styles.decorativeBox1} />
-          <View style={styles.decorativeBox2} />
-          <View style={styles.decorativeBox3} />
-        </View>
-      </View>
-    </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -91,6 +114,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#FF6B6B", // Bright coral red background
+  },
+  scrollContent: {
+    flexGrow: 1,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   content: {
@@ -98,6 +124,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 40,
     justifyContent: "center",
+    minHeight: "100%",
   },
   titleContainer: {
     alignItems: "center",
