@@ -1,3 +1,4 @@
+import CreateEditExercise from "@/components/create-edit-exercise";
 import ExerciseDetail from "@/components/exercise-detail";
 import React, { useState } from "react";
 import {
@@ -81,7 +82,6 @@ export default function Exercise() {
         </View>
       </ScrollView>
 
-      {/* Sticky Add Button at Bottom */}
       <View style={styles.stickyButtonContainer}>
         <TouchableOpacity style={styles.addButton} onPress={onPressAddNew}>
           <Text style={styles.addButtonText}>+ ADD NEW EXERCISE</Text>
@@ -95,6 +95,10 @@ export default function Exercise() {
         onRequestClose={closeExerciseDetail}
       >
         <ExerciseDetail />
+      </Modal>
+
+      <Modal visible={false} animationType="slide" transparent={true}>
+        <CreateEditExercise />
       </Modal>
     </View>
   );

@@ -67,33 +67,6 @@ export default function Index() {
           </Text>
 
           <View style={styles.actionButtons}>
-            {/* Edit Button */}
-            <TouchableOpacity
-              style={[styles.actionButton, styles.editButton]}
-              onPress={handleEdit}
-              disabled={isEditing}
-            >
-              <Ionicons
-                name="pencil"
-                size={20}
-                color={isEditing ? "#666666" : "#FFFFFF"}
-              />
-            </TouchableOpacity>
-
-            {/* Save Button */}
-            <TouchableOpacity
-              style={[styles.actionButton, styles.saveButton]}
-              onPress={handleSave}
-              disabled={!isEditing}
-            >
-              <Ionicons
-                name="checkmark"
-                size={20}
-                color={!isEditing ? "#666666" : "#FFFFFF"}
-              />
-            </TouchableOpacity>
-
-            {/* More Options Dropdown */}
             <View style={styles.dropdownContainer}>
               <TouchableOpacity
                 style={[styles.actionButton, styles.moreButton]}

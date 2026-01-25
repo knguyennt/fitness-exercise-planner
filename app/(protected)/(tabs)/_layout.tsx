@@ -1,10 +1,12 @@
+import { AuthContext } from "@/utils/authContext";
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs, router } from "expo-router";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Modal, StyleSheet, TouchableOpacity, View } from "react-native";
 import SideMenu from "../../../components/side-menu";
 
 export default function TabLayout() {
+  const authState = useContext(AuthContext);
   const [menuVisible, setMenuVisible] = useState(false);
 
   const handleMenuPress = () => {
@@ -73,7 +75,11 @@ export default function TabLayout() {
             activeOpacity={1}
           />
           <View style={styles.menuContainer}>
-            <SideMenu onNavigate={handleNavigation} onClose={handleCloseMenu} />
+            <SideMenu
+              onNavigate={handleNavigation}
+              onClose={handleCloseMenu}
+              onLogout={authState.logout}
+            />
           </View>
         </View>
       </Modal>

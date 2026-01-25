@@ -19,8 +19,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    // You can add authentication logic here
-    // For now, we'll just call the auth context login
     const { data } = await supabase
       .from("User")
       .select("*")
