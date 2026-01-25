@@ -9,6 +9,8 @@ interface TickCardProps {
   isCompleted?: boolean;
   onToggleComplete?: (isCompleted: boolean) => void;
   onPressCard?: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
 export default function TickCard({
@@ -19,13 +21,30 @@ export default function TickCard({
   isCompleted = false,
   onToggleComplete,
   onPressCard,
+  onEdit,
+  onDelete,
 }: TickCardProps) {
   const [checked, setChecked] = useState(isCompleted);
+  const [showDropdown, setShowDropdown] = useState(false);
 
   const handleToggle = () => {
     const newChecked = !checked;
     setChecked(newChecked);
     onToggleComplete?.(newChecked);
+  };
+
+  const handleMenuPress = () => {
+    setShowDropdown(!showDropdown);
+  };
+
+  const handleEdit = () => {
+    setShowDropdown(false);
+    onEdit?.();
+  };
+
+  const handleDelete = () => {
+    setShowDropdown(false);
+    onDelete?.();
   };
 
   return (
@@ -72,6 +91,23 @@ export default function TickCard({
           {checked && <Text style={styles.checkmark}>✓</Text>}
         </View>
       </TouchableOpacity>
+
+      {/* Three-dot menu - Top Right next to checkbox */}
+      <TouchableOpacity style={styles.menuContainer} onPress={handleMenuPress}>
+        <Text style={styles.menuDots}>⋮</Text>
+      </TouchableOpacity>
+
+      {/* Dropdown menu */}
+      {showDropdown && (
+        <View style={styles.dropdown}>
+          <TouchableOpacity style={styles.dropdownItem} onPress={handleEdit}>
+            <Text style={styles.dropdownText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.dropdownItem} onPress={handleDelete}>
+            <Text style={styles.dropdownText}>Delete</Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </View>
   );
 }
@@ -156,7 +192,7 @@ const styles = StyleSheet.create({
   },
   checkboxContainer: {
     position: "absolute",
-    top: 16,
+    bottom: 16,
     right: 16,
   },
   checkbox: {
@@ -175,5 +211,53 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#000000",
+  },
+  menuContainer: {
+    position: "absolute",
+    top: 12,
+    right: 12,
+    zIndex: 1,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    minWidth: 44,
+    minHeight: 44,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 4,
+  },
+  menuDots: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#000000",
+    lineHeight: 24,
+    textAlign: "center",
+  },
+  dropdown: {
+    position: "absolute",
+    top: 56,
+    right: 12,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 2,
+    borderColor: "#000000",
+    shadowColor: "#000000",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 5,
+    zIndex: 10,
+    borderRadius: 4, // Added slight rounding for modern look
+  },
+  dropdownItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E0E0E0",
+    minWidth: 100,
+  },
+  dropdownText: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#000000",
+    textAlign: "center",
   },
 });

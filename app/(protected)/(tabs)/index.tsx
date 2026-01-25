@@ -1,15 +1,45 @@
 import ExerciseDetail from "@/components/exercise-detail";
+import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Modal, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+    Modal,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import CalendarComponent from "../../../components/calendar";
 import TickCard from "../../../components/tick-card";
 
 export default function Index() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [exerciseDetailVisible, setExerciseDetailVisible] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleSave = () => {
+    setIsEditing(false);
+    // Add your save logic here
+    console.log("Saving changes...");
+  };
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+
+  const handleDropdownAction = (action: string) => {
+    setDropdownVisible(false);
+    // Handle dropdown actions here
+    console.log("Action selected:", action);
   };
 
   const onPressCard = () => {
@@ -31,18 +61,114 @@ export default function Index() {
       <CalendarComponent onDateSelect={handleDateSelect} />
 
       <View style={styles.selectedDateContainer}>
-        <Text style={styles.selectedDateText}>
-          Selected Date: {selectedDate.toDateString()}
-        </Text>
+        <View style={styles.dateHeader}>
+          <Text style={styles.selectedDateText}>
+            {selectedDate.toDateString()}
+          </Text>
+
+          <View style={styles.actionButtons}>
+            {/* Edit Button */}
+            <TouchableOpacity
+              style={[styles.actionButton, styles.editButton]}
+              onPress={handleEdit}
+              disabled={isEditing}
+            >
+              <Ionicons
+                name="pencil"
+                size={20}
+                color={isEditing ? "#666666" : "#FFFFFF"}
+              />
+            </TouchableOpacity>
+
+            {/* Save Button */}
+            <TouchableOpacity
+              style={[styles.actionButton, styles.saveButton]}
+              onPress={handleSave}
+              disabled={!isEditing}
+            >
+              <Ionicons
+                name="checkmark"
+                size={20}
+                color={!isEditing ? "#666666" : "#FFFFFF"}
+              />
+            </TouchableOpacity>
+
+            {/* More Options Dropdown */}
+            <View style={styles.dropdownContainer}>
+              <TouchableOpacity
+                style={[styles.actionButton, styles.moreButton]}
+                onPress={toggleDropdown}
+              >
+                <Ionicons name="ellipsis-vertical" size={20} color="#FFFFFF" />
+              </TouchableOpacity>
+
+              {dropdownVisible && (
+                <View style={styles.dropdown}>
+                  <TouchableOpacity
+                    style={styles.dropdownItem}
+                    onPress={() => handleDropdownAction("duplicate")}
+                  >
+                    <Ionicons name="copy-outline" size={16} color="#000000" />
+                    <Text style={styles.dropdownText}>Duplicate Day</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.dropdownItem}
+                    onPress={() => handleDropdownAction("delete")}
+                  >
+                    <Ionicons name="trash-outline" size={16} color="#000000" />
+                    <Text style={styles.dropdownText}>Delete Workout</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.dropdownItem}
+                    onPress={() => handleDropdownAction("share")}
+                  >
+                    <Ionicons name="share-outline" size={16} color="#000000" />
+                    <Text style={styles.dropdownText}>Share Progress</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.dropdownItem}
+                    onPress={() => handleDropdownAction("notes")}
+                  >
+                    <Ionicons
+                      name="document-text-outline"
+                      size={16}
+                      color="#000000"
+                    />
+                    <Text style={styles.dropdownText}>Add Notes</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
+        </View>
+
+        {isEditing && (
+          <View style={styles.editModeIndicator}>
+            <Text style={styles.editModeText}>✨ Edit Mode Active</Text>
+          </View>
+        )}
       </View>
 
-      <TickCard
-        title="Push Ups"
-        reps={15}
-        sets={3}
-        isCompleted={false}
-        onPressCard={onPressCard}
-      />
+      <View style={styles.tickCardList}>
+        <TickCard
+          title="Push Ups"
+          reps={15}
+          sets={3}
+          isCompleted={false}
+          onPressCard={onPressCard}
+        />
+
+        <TickCard
+          title="Push Ups"
+          reps={15}
+          sets={3}
+          isCompleted={false}
+          onPressCard={onPressCard}
+        />
+      </View>
 
       <Modal
         visible={exerciseDetailVisible}
@@ -59,38 +185,133 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#f8f4ff",
   },
   header: {
-    padding: 20,
-    backgroundColor: "#007AFF",
+    padding: 24,
+    backgroundColor: "#6b46c1",
+    borderBottomWidth: 6,
+    borderBottomColor: "#000000",
+    shadowColor: "#000000",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 8,
   },
   title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#fff",
+    fontSize: 28,
+    fontWeight: "900",
+    color: "#ffffff",
     textAlign: "center",
+    textShadowColor: "#000000",
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 0,
   },
   subtitle: {
     fontSize: 16,
-    color: "#E8F2FF",
+    color: "#e9d5ff",
     textAlign: "center",
     marginTop: 8,
+    fontWeight: "600",
   },
   selectedDateContainer: {
-    padding: 16,
+    padding: 20,
     margin: 16,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: "#ffffff",
+    borderWidth: 4,
+    borderColor: "#000000",
+    borderRadius: 0,
+    shadowColor: "#000000",
+    shadowOffset: { width: 6, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 8,
+  },
+  dateHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   selectedDateText: {
-    fontSize: 16,
-    color: "#333",
+    fontSize: 18,
+    color: "#000000",
+    fontWeight: "800",
+    flex: 1,
+  },
+  actionButtons: {
+    flexDirection: "row",
+    gap: 8,
+  },
+  actionButton: {
+    width: 44,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 3,
+    borderColor: "#000000",
+    borderRadius: 0,
+    shadowColor: "#000000",
+    shadowOffset: { width: 3, height: 3 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
+  },
+  editButton: {
+    backgroundColor: "#10b981",
+  },
+  saveButton: {
+    backgroundColor: "#3b82f6",
+  },
+  moreButton: {
+    backgroundColor: "#8b5cf6",
+  },
+  dropdownContainer: {
+    position: "relative",
+  },
+  dropdown: {
+    position: "absolute",
+    top: 52,
+    right: 0,
+    backgroundColor: "#ffffff",
+    borderWidth: 4,
+    borderColor: "#000000",
+    borderRadius: 0,
+    shadowColor: "#000000",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 8,
+    minWidth: 180,
+    zIndex: 1000,
+  },
+  dropdownItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    borderBottomWidth: 2,
+    borderBottomColor: "#e5e7eb",
+  },
+  dropdownText: {
+    marginLeft: 8,
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#000000",
+  },
+  editModeIndicator: {
+    marginTop: 12,
+    padding: 8,
+    backgroundColor: "#fef3c7",
+    borderWidth: 2,
+    borderColor: "#f59e0b",
+    borderRadius: 0,
+  },
+  editModeText: {
+    fontSize: 14,
+    fontWeight: "700",
+    color: "#92400e",
     textAlign: "center",
+  },
+  tickCardList: {
+    zIndex: -1,
   },
 });

@@ -62,7 +62,7 @@ export default function TabLayout() {
 
       <Modal
         visible={menuVisible}
-        animationType="slide"
+        animationType="fade"
         transparent={true}
         onRequestClose={handleCloseMenu}
       >
