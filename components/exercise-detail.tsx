@@ -1,5 +1,8 @@
+import { useEvent } from "expo";
+import { useVideoPlayer, VideoView } from "expo-video";
 import React from "react";
 import {
+    Button,
     Dimensions,
     Image,
     ScrollView,
@@ -34,6 +37,18 @@ export default function ExerciseDetail({
 }: ExerciseDetailProps) {
   const { width, height } = Dimensions.get("window");
   const isTablet = width > 768;
+
+  const player = useVideoPlayer(videoUrl, (player) => {
+    player.loop = true;
+  });
+
+  const { isPlaying } = useEvent(player, "playingChange", {
+    isPlaying: player.playing,
+  });
+
+  const { status } = useEvent(player, "statusChange", {
+    status: player.status,
+  });
 
   const getDifficultyColor = (level: string) => {
     switch (level) {
@@ -125,16 +140,36 @@ export default function ExerciseDetail({
           {/* Video Section */}
           <View style={styles.videoContainer}>
             <Text style={styles.sectionTitle}>VIDEO DEMO</Text>
-            <TouchableOpacity style={styles.videoPreview}>
-              <Image
-                source={{ uri: videoUrl }}
-                style={styles.videoImage}
-                resizeMode="cover"
-              />
-              <View style={styles.playButton}>
-                <Text style={styles.playButtonText}>▶</Text>
+            {status === "error" ? (
+              <View style={styles.videoError}>
+                <Text style={styles.videoErrorText}>Failed to load video</Text>
+                <Text style={styles.videoErrorSubtext}>
+                  Please check the video URL
+                </Text>
               </View>
-            </TouchableOpacity>
+            ) : (
+              <View style={styles.videoPlayerContainer}>
+                <VideoView
+                  player={player}
+                  allowsFullscreen
+                  allowsPictureInPicture
+                  style={styles.videoPlayer}
+                  contentFit="contain"
+                />
+                <View style={styles.videoControls}>
+                  <Button
+                    title={isPlaying ? "Pause" : "Play"}
+                    onPress={() => {
+                      if (isPlaying) {
+                        player.pause();
+                      } else {
+                        player.play();
+                      }
+                    }}
+                  />
+                </View>
+              </View>
+            )}
           </View>
         </View>
       </View>
@@ -323,6 +358,39 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 4, height: 4 },
     shadowOpacity: 1,
     shadowRadius: 0,
+  },
+  videoPlayerContainer: {
+    backgroundColor: "#000",
+    borderWidth: 3,
+    borderColor: "#000",
+    borderRadius: 8,
+    overflow: "hidden",
+  },
+  videoPlayer: {
+    width: "100%",
+    height: 200,
+  },
+  videoControls: {
+    padding: 10,
+    backgroundColor: "#fff",
+  },
+  videoError: {
+    backgroundColor: "#ff4757",
+    padding: 20,
+    borderWidth: 3,
+    borderColor: "#000",
+    alignItems: "center",
+  },
+  videoErrorText: {
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#fff",
+  },
+  videoErrorSubtext: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#fff",
+    marginTop: 4,
   },
   videoPreview: {
     position: "relative",

@@ -1,6 +1,7 @@
 import CreateEditExercise from "@/components/create-edit-exercise";
 import ExerciseDetail from "@/components/exercise-detail";
-import React, { useState } from "react";
+import { supabase } from "@/utils/supabase";
+import React, { useEffect, useState } from "react";
 import {
     Modal,
     ScrollView,
@@ -13,8 +14,13 @@ import TickCard from "../../../components/tick-card";
 
 export default function Exercise() {
   const [exerciseDetailVisible, setExerciseDetailVisible] = useState(false);
+  const [createEditExerciseVisible, setCreateEditExerciseVisible] =
+    useState(false);
+  const [exerciseData, setExerciseData] = useState<any[]>([]);
+  const [selectedExercise, setSelectedExercise] = useState<any>(null);
 
-  const onPressCard = () => {
+  const onPressCard = (data: any) => {
+    setSelectedExercise(data);
     setExerciseDetailVisible(true);
   };
   const closeExerciseDetail = () => {
@@ -22,9 +28,17 @@ export default function Exercise() {
   };
 
   const onPressAddNew = () => {
-    // TODO: Implement add new exercise functionality
-    console.log("Add new exercise pressed");
+    setCreateEditExerciseVisible(true);
   };
+
+  const getExerciseData = async () => {
+    const { data } = await supabase.from("Exercise").select("*");
+    setExerciseData(data || []);
+  };
+
+  useEffect(() => {
+    getExerciseData();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -40,45 +54,17 @@ export default function Exercise() {
         </View>
 
         <View style={styles.tickCardList}>
-          <TickCard
-            title="Push Ups"
-            reps={15}
-            sets={3}
-            isCompleted={false}
-            onPressCard={onPressCard}
-          />
-
-          <TickCard
-            title="Push Ups"
-            reps={15}
-            sets={3}
-            isCompleted={false}
-            onPressCard={onPressCard}
-          />
-
-          <TickCard
-            title="Push Ups"
-            reps={15}
-            sets={3}
-            isCompleted={false}
-            onPressCard={onPressCard}
-          />
-
-          <TickCard
-            title="Push Ups"
-            reps={15}
-            sets={3}
-            isCompleted={false}
-            onPressCard={onPressCard}
-          />
-
-          <TickCard
-            title="Push Ups"
-            reps={15}
-            sets={3}
-            isCompleted={false}
-            onPressCard={onPressCard}
-          />
+          {exerciseData.map((exercise) => (
+            <TickCard
+              key={exercise.id}
+              title={exercise.name}
+              imageSource={exercise.image_url}
+              reps={15}
+              sets={3}
+              isCompleted={false}
+              onPressCard={() => onPressCard(exercise)}
+            />
+          ))}
         </View>
       </ScrollView>
 
@@ -94,12 +80,19 @@ export default function Exercise() {
         transparent={true}
         onRequestClose={closeExerciseDetail}
       >
-        <ExerciseDetail />
+        <ExerciseDetail
+          exerciseName={selectedExercise?.name}
+          imageUrl={selectedExercise?.image_url}
+          videoUrl={selectedExercise?.video_url}
+          onClose={closeExerciseDetail}
+        />
       </Modal>
 
-      <Modal visible={false} animationType="slide" transparent={true}>
-        <CreateEditExercise />
-      </Modal>
+      <CreateEditExercise
+        onCancel={() => setCreateEditExerciseVisible(false)}
+        visible={createEditExerciseVisible}
+        mode="create"
+      />
     </View>
   );
 }
@@ -113,7 +106,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 100, // Add padding to prevent content from being hidden behind sticky button
+    paddingBottom: 100,
   },
   header: {
     padding: 24,

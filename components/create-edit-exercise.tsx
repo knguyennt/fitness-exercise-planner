@@ -22,9 +22,9 @@ interface Exercise {
 
 interface CreateEditExerciseProps {
   visible: boolean;
-  mode: "create" | "edit";
+  mode?: "create" | "edit";
   exercise?: Exercise;
-  onSave: (exercise: Exercise) => void;
+  onSave?: (exercise: Exercise) => void;
   onCancel: () => void;
 }
 

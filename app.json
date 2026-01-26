@@ -28,6 +28,13 @@
     },
     "plugins": [
       [
+        "expo-video",
+        {
+          "supportsBackgroundPlayback": true,
+          "supportsPictureInPicture": true
+        }
+      ],
+      [
         "expo-calendar",
         {
           "calendarPermission": "The app needs to access your calendar."
@@ -46,7 +53,8 @@
           }
         }
       ],
-      "expo-sqlite"
+      "expo-sqlite",
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,
