@@ -1,5 +1,6 @@
 import CreateEditExercise from "@/components/create-edit-exercise";
 import ExerciseDetail from "@/components/exercise-detail";
+import { useExercise } from "@/hooks/useExercise";
 import { supabase } from "@/utils/supabase";
 import React, { useEffect, useState } from "react";
 import {
@@ -18,6 +19,7 @@ export default function Exercise() {
     useState(false);
   const [exerciseData, setExerciseData] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>(null);
+  const { createExercise } = useExercise();
 
   const onPressCard = (data: any) => {
     setSelectedExercise(data);
@@ -34,6 +36,10 @@ export default function Exercise() {
   const getExerciseData = async () => {
     const { data } = await supabase.from("Exercise").select("*");
     setExerciseData(data || []);
+  };
+
+  const saveExercise = (exercise: any) => {
+    createExercise(exercise);
   };
 
   useEffect(() => {
@@ -90,6 +96,7 @@ export default function Exercise() {
 
       <CreateEditExercise
         onCancel={() => setCreateEditExerciseVisible(false)}
+        onSave={(exercise) => saveExercise(exercise)}
         visible={createEditExerciseVisible}
         mode="create"
       />

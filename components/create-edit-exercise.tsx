@@ -11,13 +11,12 @@ import {
 } from "react-native";
 
 interface Exercise {
+  id?: string;
+  created_at?: string;
   name: string;
-  imageUrl: string;
-  videoUrl: string;
-  time: string;
-  break: string;
-  set: string;
-  rep: string;
+  image_url: string;
+  video_url: string;
+  user_id?: string;
 }
 
 interface CreateEditExerciseProps {
@@ -37,12 +36,8 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
 }) => {
   const [formData, setFormData] = useState<Exercise>({
     name: "",
-    imageUrl: "",
-    videoUrl: "",
-    time: "",
-    break: "",
-    set: "",
-    rep: "",
+    image_url: "",
+    video_url: "",
   });
 
   useEffect(() => {
@@ -51,12 +46,8 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
     } else {
       setFormData({
         name: "",
-        imageUrl: "",
-        videoUrl: "",
-        time: "",
-        break: "",
-        set: "",
-        rep: "",
+        image_url: "",
+        video_url: "",
       });
     }
   }, [exercise, mode, visible]);
@@ -81,12 +72,8 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
   const handleCancel = () => {
     setFormData({
       name: "",
-      imageUrl: "",
-      videoUrl: "",
-      time: "",
-      break: "",
-      set: "",
-      rep: "",
+      image_url: "",
+      video_url: "",
     });
     onCancel();
   };
@@ -135,8 +122,10 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
                 <Text style={styles.label}>IMAGE URL</Text>
                 <TextInput
                   style={styles.input}
-                  value={formData.imageUrl}
-                  onChangeText={(value) => handleInputChange("imageUrl", value)}
+                  value={formData.image_url}
+                  onChangeText={(value) =>
+                    handleInputChange("image_url", value)
+                  }
                   placeholder="https://example.com/image.jpg"
                   placeholderTextColor="#666"
                   autoCapitalize="none"
@@ -148,63 +137,13 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
                 <Text style={styles.label}>VIDEO URL</Text>
                 <TextInput
                   style={styles.input}
-                  value={formData.videoUrl}
-                  onChangeText={(value) => handleInputChange("videoUrl", value)}
+                  value={formData.video_url}
+                  onChangeText={(value) =>
+                    handleInputChange("video_url", value)
+                  }
                   placeholder="https://youtube.com/watch?v=..."
                   placeholderTextColor="#666"
                   autoCapitalize="none"
-                />
-              </View>
-
-              {/* Time */}
-              <View style={styles.fieldContainer}>
-                <Text style={styles.label}>TIME (SECONDS)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.time}
-                  onChangeText={(value) => handleInputChange("time", value)}
-                  placeholder="30"
-                  placeholderTextColor="#666"
-                  keyboardType="numeric"
-                />
-              </View>
-
-              {/* Break */}
-              <View style={styles.fieldContainer}>
-                <Text style={styles.label}>BREAK (SECONDS)</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.break}
-                  onChangeText={(value) => handleInputChange("break", value)}
-                  placeholder="15"
-                  placeholderTextColor="#666"
-                  keyboardType="numeric"
-                />
-              </View>
-
-              {/* Sets */}
-              <View style={styles.fieldContainer}>
-                <Text style={styles.label}>SETS</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.set}
-                  onChangeText={(value) => handleInputChange("set", value)}
-                  placeholder="3"
-                  placeholderTextColor="#666"
-                  keyboardType="numeric"
-                />
-              </View>
-
-              {/* Reps */}
-              <View style={styles.fieldContainer}>
-                <Text style={styles.label}>REPS</Text>
-                <TextInput
-                  style={styles.input}
-                  value={formData.rep}
-                  onChangeText={(value) => handleInputChange("rep", value)}
-                  placeholder="10"
-                  placeholderTextColor="#666"
-                  keyboardType="numeric"
                 />
               </View>
             </View>
