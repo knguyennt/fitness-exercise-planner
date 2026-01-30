@@ -1,3 +1,4 @@
+import { useVideoUrl } from "@/hooks/useVideoIUrl";
 import { useEvent } from "expo";
 import { useVideoPlayer, VideoView } from "expo-video";
 import React from "react";
@@ -37,8 +38,9 @@ export default function ExerciseDetail({
 }: ExerciseDetailProps) {
   const { width, height } = Dimensions.get("window");
   const isTablet = width > 768;
+  const { videoUrl: fetchedVideoUrl } = useVideoUrl(videoUrl);
 
-  const player = useVideoPlayer(videoUrl, (player) => {
+  const player = useVideoPlayer(fetchedVideoUrl, (player) => {
     player.loop = true;
   });
 
