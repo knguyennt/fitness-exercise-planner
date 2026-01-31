@@ -83,16 +83,10 @@ export const exerciseService = {
     exerciseData: Partial<CreateExerciseData>,
   ): Promise<Exercise> {
     try {
-      const { data: user } = await supabase.auth.getUser();
-      if (!user.user) {
-        throw new Error("User not authenticated");
-      }
-
       const { data, error } = await supabase
         .from("Exercise")
         .update(exerciseData)
         .eq("id", id)
-        .eq("user_id", user.user.id)
         .select()
         .single();
 

@@ -15,11 +15,12 @@ import TickCard from "../../../components/tick-card";
 
 export default function Exercise() {
   const [exerciseDetailVisible, setExerciseDetailVisible] = useState(false);
-  const [createEditExerciseVisible, setCreateEditExerciseVisible] =
-    useState(false);
+  const [createExerciseVisible, setCreateExerciseVisible] = useState(false);
+
+  const [editExerciseVisible, setEditExerciseVisible] = useState(false);
   const [exerciseData, setExerciseData] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>(null);
-  const { createExercise, deleteExercise } = useExercise();
+  const { createExercise, deleteExercise, updateExercise } = useExercise();
 
   const onPressCard = (data: any) => {
     setSelectedExercise(data);
@@ -30,7 +31,12 @@ export default function Exercise() {
   };
 
   const onPressAddNew = () => {
-    setCreateEditExerciseVisible(true);
+    setCreateExerciseVisible(true);
+  };
+
+  const onPressEdit = (exercise: any) => {
+    setSelectedExercise(exercise);
+    setEditExerciseVisible(true);
   };
 
   const getExerciseData = async () => {
@@ -40,6 +46,10 @@ export default function Exercise() {
 
   const saveExercise = (exercise: any) => {
     createExercise(exercise);
+  };
+
+  const updateExerciseData = (exercise: any) => {
+    updateExercise(exercise.id, exercise);
   };
 
   useEffect(() => {
@@ -70,6 +80,7 @@ export default function Exercise() {
               isCompleted={false}
               onPressCard={() => onPressCard(exercise)}
               onDelete={() => deleteExercise(exercise?.id)}
+              onEdit={() => onPressEdit(exercise)}
             />
           ))}
         </View>
@@ -96,10 +107,18 @@ export default function Exercise() {
       </Modal>
 
       <CreateEditExercise
-        onCancel={() => setCreateEditExerciseVisible(false)}
+        onCancel={() => setCreateExerciseVisible(false)}
         onSave={(exercise) => saveExercise(exercise)}
-        visible={createEditExerciseVisible}
+        visible={createExerciseVisible}
         mode="create"
+      />
+
+      <CreateEditExercise
+        onCancel={() => setEditExerciseVisible(false)}
+        onSave={(exercise) => updateExerciseData(exercise)}
+        visible={editExerciseVisible}
+        mode="edit"
+        exercise={selectedExercise}
       />
     </View>
   );
