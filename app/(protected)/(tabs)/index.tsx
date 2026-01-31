@@ -1,7 +1,8 @@
 import CreateSessionDialog from "@/components/create-session-dialog";
 import ExerciseDetail from "@/components/exercise-detail";
+import { useSession } from "@/hooks/useSession";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Modal,
     ScrollView,
@@ -19,6 +20,12 @@ export default function Index() {
   const [isEditing, setIsEditing] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [createDialogVisible, setCreateDialogVisible] = useState(false);
+  const [displaySession, setDisplaySession] = useState<any[]>([]);
+  const {
+    createSession,
+    getSessionByDate,
+    session: selectedSession,
+  } = useSession();
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
@@ -46,8 +53,8 @@ export default function Index() {
     }
   };
 
-  const handleCreateSession = (sessionName: string) => {
-    console.log("Creating session:", sessionName);
+  const handleCreateSession = async (sessionName: string) => {
+    await createSession({ name: sessionName, date: selectedDate });
     setCreateDialogVisible(false);
   };
 
@@ -61,6 +68,20 @@ export default function Index() {
   const closeExerciseDetail = () => {
     setExerciseDetailVisible(false);
   };
+
+  useEffect(() => {
+    async function fetchSession() {
+      await getSessionByDate(selectedDate.toLocaleDateString("en-CA"));
+      setDisplaySession(
+        Array.isArray(selectedSession)
+          ? selectedSession
+          : selectedSession
+            ? [selectedSession]
+            : [],
+      );
+    }
+    fetchSession();
+  }, [selectedDate]);
 
   return (
     <ScrollView style={styles.container}>
@@ -134,22 +155,51 @@ export default function Index() {
         )}
       </View>
 
-      <View style={styles.tickCardList}>
-        <TickCard
-          title="Push Ups"
-          reps={15}
-          sets={3}
-          isCompleted={false}
-          onPressCard={onPressCard}
-        />
+      {/* Sessions List */}
+      <View style={styles.sessionsContainer}>
+        {displaySession.length === 0 ? (
+          <View style={styles.noSessionsContainer}>
+            <Text style={styles.noSessionsText}>No sessions for this date</Text>
+            <TouchableOpacity
+              style={styles.addExerciseButton}
+              onPress={() => setCreateDialogVisible(true)}
+            >
+              <Text style={styles.addExerciseButtonText}>Create Session</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          displaySession.map((session) => (
+            <View key={session.id} style={styles.sessionContainer}>
+              <Text style={styles.sessionName}>{session.name}</Text>
 
-        <TickCard
-          title="Push Ups"
-          reps={15}
-          sets={3}
-          isCompleted={false}
-          onPressCard={onPressCard}
-        />
+              {/* Check if session has exercises/data */}
+              {!session.exercises || session.exercises.length === 0 ? (
+                <TouchableOpacity
+                  style={styles.addExerciseButton}
+                  onPress={() => {
+                    // Handle add exercise for this specific session
+                    console.log("Add exercise to session:", session.id);
+                  }}
+                >
+                  <Text style={styles.addExerciseButtonText}>Add Exercise</Text>
+                </TouchableOpacity>
+              ) : (
+                <View style={styles.exercisesList}>
+                  {session.exercises.map((exercise: any, index: number) => (
+                    <TickCard
+                      key={index}
+                      title={exercise.title || "Exercise"}
+                      reps={exercise.reps || 0}
+                      sets={exercise.sets || 0}
+                      isCompleted={exercise.isCompleted || false}
+                      onPressCard={onPressCard}
+                    />
+                  ))}
+                </View>
+              )}
+            </View>
+          ))
+        )}
       </View>
 
       <Modal
@@ -301,5 +351,76 @@ const styles = StyleSheet.create({
   },
   tickCardList: {
     zIndex: -1,
+  },
+  sessionsContainer: {
+    padding: 16,
+  },
+  noSessionsContainer: {
+    padding: 20,
+    margin: 16,
+    backgroundColor: "#ffffff",
+    borderWidth: 4,
+    borderColor: "#000000",
+    borderRadius: 0,
+    shadowColor: "#000000",
+    shadowOffset: { width: 6, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 8,
+    alignItems: "center",
+  },
+  noSessionsText: {
+    fontSize: 16,
+    color: "#6b7280",
+    fontWeight: "600",
+    marginBottom: 16,
+  },
+  sessionContainer: {
+    marginBottom: 20,
+    backgroundColor: "#ffffff",
+    borderWidth: 4,
+    borderColor: "#000000",
+    borderRadius: 0,
+    shadowColor: "#000000",
+    shadowOffset: { width: 6, height: 6 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 8,
+    overflow: "hidden",
+  },
+  sessionName: {
+    fontSize: 20,
+    fontWeight: "800",
+    color: "#ffffff",
+    backgroundColor: "#6b46c1",
+    padding: 16,
+    textShadowColor: "#000000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 0,
+  },
+  addExerciseButton: {
+    backgroundColor: "#10b981",
+    padding: 16,
+    margin: 16,
+    borderWidth: 3,
+    borderColor: "#000000",
+    borderRadius: 0,
+    shadowColor: "#000000",
+    shadowOffset: { width: 4, height: 4 },
+    shadowOpacity: 1,
+    shadowRadius: 0,
+    elevation: 4,
+    alignItems: "center",
+  },
+  addExerciseButtonText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#ffffff",
+    textShadowColor: "#000000",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 0,
+  },
+  exercisesList: {
+    padding: 16,
   },
 });

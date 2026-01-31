@@ -118,12 +118,10 @@ export const useExercise = (): UseExerciseReturn => {
     [],
   );
 
-  // Refresh exercises (alias for fetchExercises)
   const refreshExercises = useCallback(async () => {
     await fetchExercises();
   }, [fetchExercises]);
 
-  // Load exercises on mount
   useEffect(() => {
     fetchExercises();
   }, [fetchExercises]);
