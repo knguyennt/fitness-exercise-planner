@@ -19,7 +19,7 @@ export default function Exercise() {
     useState(false);
   const [exerciseData, setExerciseData] = useState<any[]>([]);
   const [selectedExercise, setSelectedExercise] = useState<any>(null);
-  const { createExercise } = useExercise();
+  const { createExercise, deleteExercise } = useExercise();
 
   const onPressCard = (data: any) => {
     setSelectedExercise(data);
@@ -69,6 +69,7 @@ export default function Exercise() {
               sets={3}
               isCompleted={false}
               onPressCard={() => onPressCard(exercise)}
+              onDelete={() => deleteExercise(exercise?.id)}
             />
           ))}
         </View>

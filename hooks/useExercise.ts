@@ -41,7 +41,6 @@ export const useExercise = (): UseExerciseReturn => {
     }
   }, []);
 
-  // Create a new exercise
   const createExercise = useCallback(
     async (exerciseData: CreateExerciseData) => {
       try {
@@ -62,7 +61,6 @@ export const useExercise = (): UseExerciseReturn => {
     [],
   );
 
-  // Update an existing exercise
   const updateExercise = useCallback(
     async (id: string, exerciseData: Partial<CreateExerciseData>) => {
       try {
@@ -90,7 +88,6 @@ export const useExercise = (): UseExerciseReturn => {
     [],
   );
 
-  // Delete an exercise
   const deleteExercise = useCallback(async (id: string) => {
     try {
       setLoading(true);
