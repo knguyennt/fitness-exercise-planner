@@ -44,12 +44,16 @@ export default function Exercise() {
     setExerciseData(data || []);
   };
 
-  const saveExercise = (exercise: any) => {
-    createExercise(exercise);
+  const saveExercise = async (exercise: any) => {
+    await createExercise(exercise);
+    await getExerciseData();
+    setCreateExerciseVisible(false);
   };
 
-  const updateExerciseData = (exercise: any) => {
-    updateExercise(exercise.id, exercise);
+  const updateExerciseData = async (exercise: any) => {
+    await updateExercise(exercise.id, exercise);
+    await getExerciseData();
+    setEditExerciseVisible(false);
   };
 
   useEffect(() => {
@@ -75,8 +79,7 @@ export default function Exercise() {
               key={exercise.id}
               title={exercise.name}
               imageSource={exercise.image_url}
-              reps={15}
-              sets={3}
+              showTick={false}
               isCompleted={false}
               onPressCard={() => onPressCard(exercise)}
               onDelete={() => deleteExercise(exercise?.id)}

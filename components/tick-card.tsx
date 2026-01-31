@@ -7,6 +7,7 @@ interface TickCardProps {
   reps?: number;
   sets?: number;
   isCompleted?: boolean;
+  showTick?: boolean;
   onToggleComplete?: (isCompleted: boolean) => void;
   onPressCard?: () => void;
   onEdit?: () => void;
@@ -19,6 +20,7 @@ export default function TickCard({
   reps = 0,
   sets = 0,
   isCompleted = false,
+  showTick = true,
   onToggleComplete,
   onPressCard,
   onEdit,
@@ -49,9 +51,7 @@ export default function TickCard({
 
   return (
     <View style={styles.container}>
-      {/* Main card content - clickable */}
       <TouchableOpacity style={styles.cardContent} onPress={onPressCard}>
-        {/* Image Box on Left */}
         <View style={styles.imageContainer}>
           {imageSource ? (
             <Image
@@ -66,38 +66,40 @@ export default function TickCard({
           )}
         </View>
 
-        {/* Content Area */}
         <View style={styles.contentContainer}>
-          {/* Title */}
           <Text style={styles.title}>{title}</Text>
 
-          {/* Reps and Sets Row */}
           <View style={styles.statsRow}>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>REPS</Text>
-              <Text style={styles.statValue}>{reps}</Text>
-            </View>
-            <View style={styles.statBox}>
-              <Text style={styles.statLabel}>SETS</Text>
-              <Text style={styles.statValue}>{sets}</Text>
-            </View>
+            {reps > 0 && (
+              <View style={styles.statBox}>
+                <Text style={styles.statLabel}>REPS</Text>
+                <Text style={styles.statValue}>{reps}</Text>
+              </View>
+            )}
+            {sets > 0 && (
+              <View style={styles.statBox}>
+                <Text style={styles.statLabel}>SETS</Text>
+                <Text style={styles.statValue}>{sets}</Text>
+              </View>
+            )}
           </View>
         </View>
       </TouchableOpacity>
 
-      {/* Checkbox - Top Right - separate from card press */}
-      <TouchableOpacity style={styles.checkboxContainer} onPress={handleToggle}>
-        <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
-          {checked && <Text style={styles.checkmark}>✓</Text>}
-        </View>
-      </TouchableOpacity>
-
-      {/* Three-dot menu - Top Right next to checkbox */}
+      {showTick && (
+        <TouchableOpacity
+          style={styles.checkboxContainer}
+          onPress={handleToggle}
+        >
+          <View style={[styles.checkbox, checked && styles.checkboxChecked]}>
+            {checked && <Text style={styles.checkmark}>✓</Text>}
+          </View>
+        </TouchableOpacity>
+      )}
       <TouchableOpacity style={styles.menuContainer} onPress={handleMenuPress}>
         <Text style={styles.menuDots}>⋮</Text>
       </TouchableOpacity>
 
-      {/* Dropdown menu */}
       {showDropdown && (
         <View style={styles.dropdown}>
           <TouchableOpacity style={styles.dropdownItem} onPress={handleEdit}>
