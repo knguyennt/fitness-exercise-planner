@@ -79,6 +79,22 @@ export default function Index() {
                 <View style={styles.dropdown}>
                   <TouchableOpacity
                     style={styles.dropdownItem}
+                    onPress={() => handleDropdownAction("create")}
+                  >
+                    <Ionicons name="add" size={16} color="#000000" />
+                    <Text style={styles.dropdownText}>Create Workout</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.dropdownItem}
+                    onPress={() => handleDropdownAction("edit")}
+                  >
+                    <Ionicons name="pencil" size={16} color="#000000" />
+                    <Text style={styles.dropdownText}>Edit Workout</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.dropdownItem}
                     onPress={() => handleDropdownAction("duplicate")}
                   >
                     <Ionicons name="copy-outline" size={16} color="#000000" />
@@ -91,26 +107,6 @@ export default function Index() {
                   >
                     <Ionicons name="trash-outline" size={16} color="#000000" />
                     <Text style={styles.dropdownText}>Delete Workout</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.dropdownItem}
-                    onPress={() => handleDropdownAction("share")}
-                  >
-                    <Ionicons name="share-outline" size={16} color="#000000" />
-                    <Text style={styles.dropdownText}>Share Progress</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.dropdownItem}
-                    onPress={() => handleDropdownAction("notes")}
-                  >
-                    <Ionicons
-                      name="document-text-outline"
-                      size={16}
-                      color="#000000"
-                    />
-                    <Text style={styles.dropdownText}>Add Notes</Text>
                   </TouchableOpacity>
                 </View>
               )}

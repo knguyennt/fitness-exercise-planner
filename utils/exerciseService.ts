@@ -34,7 +34,6 @@ export const exerciseService = {
     }
   },
 
-  // Get a single exercise by ID
   async getExerciseById(id: string): Promise<Exercise | null> {
     try {
       const { data, error } = await supabase
@@ -45,7 +44,7 @@ export const exerciseService = {
 
       if (error) {
         if (error.code === "PGRST116") {
-          return null; // No rows returned
+          return null;
         }
         throw error;
       }
@@ -77,7 +76,6 @@ export const exerciseService = {
     }
   },
 
-  // Update an existing exercise
   async updateExercise(
     id: string,
     exerciseData: Partial<CreateExerciseData>,
