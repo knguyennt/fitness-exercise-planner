@@ -1,3 +1,4 @@
+import CreateSessionDialog from "@/components/create-session-dialog";
 import ExerciseDetail from "@/components/exercise-detail";
 import { Ionicons } from "@expo/vector-icons";
 import React, { useState } from "react";
@@ -17,6 +18,7 @@ export default function Index() {
   const [exerciseDetailVisible, setExerciseDetailVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
+  const [createDialogVisible, setCreateDialogVisible] = useState(false);
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
@@ -28,7 +30,6 @@ export default function Index() {
 
   const handleSave = () => {
     setIsEditing(false);
-    // Add your save logic here
     console.log("Saving changes...");
   };
 
@@ -38,8 +39,20 @@ export default function Index() {
 
   const handleDropdownAction = (action: string) => {
     setDropdownVisible(false);
-    // Handle dropdown actions here
-    console.log("Action selected:", action);
+    if (action === "create_session") {
+      setCreateDialogVisible(true);
+    } else {
+      console.log("Action selected:", action);
+    }
+  };
+
+  const handleCreateSession = (sessionName: string) => {
+    console.log("Creating session:", sessionName);
+    setCreateDialogVisible(false);
+  };
+
+  const closeCreateDialog = () => {
+    setCreateDialogVisible(false);
   };
 
   const onPressCard = () => {
@@ -79,10 +92,10 @@ export default function Index() {
                 <View style={styles.dropdown}>
                   <TouchableOpacity
                     style={styles.dropdownItem}
-                    onPress={() => handleDropdownAction("create")}
+                    onPress={() => handleDropdownAction("create_session")}
                   >
                     <Ionicons name="add" size={16} color="#000000" />
-                    <Text style={styles.dropdownText}>Create Workout</Text>
+                    <Text style={styles.dropdownText}>Create Session</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
@@ -147,6 +160,12 @@ export default function Index() {
       >
         <ExerciseDetail />
       </Modal>
+
+      <CreateSessionDialog
+        visible={createDialogVisible}
+        onClose={closeCreateDialog}
+        onCreateSession={handleCreateSession}
+      />
     </ScrollView>
   );
 }
