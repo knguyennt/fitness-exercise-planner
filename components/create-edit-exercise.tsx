@@ -66,7 +66,7 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
       return;
     }
 
-    onSave(formData);
+    onSave?.(formData);
   };
 
   const handleCancel = () => {
@@ -75,7 +75,7 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
       image_url: "",
       video_url: "",
     });
-    onCancel();
+    onCancel?.();
   };
 
   return (

@@ -1,8 +1,11 @@
+import AddExerciseDialog from "@/components/add-exercise-dialog";
 import CreateSessionDialog from "@/components/create-session-dialog";
 import ExerciseDetail from "@/components/exercise-detail";
 import { useSession } from "@/hooks/useSession";
+import { useSessionExercise } from "@/hooks/useSessionExercise";
+import { SessionExerciseWithDetails } from "@/utils/sessionExerciseService";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
     Modal,
     ScrollView,
@@ -17,27 +20,25 @@ import TickCard from "../../../components/tick-card";
 export default function Index() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [exerciseDetailVisible, setExerciseDetailVisible] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [createDialogVisible, setCreateDialogVisible] = useState(false);
+  const [addExerciseDialogVisible, setAddExerciseDialogVisible] =
+    useState(false);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
   const [displaySession, setDisplaySession] = useState<any[]>([]);
+  const [sessionExercises, setSessionExercises] = useState<{
+    [sessionId: string]: SessionExerciseWithDetails[];
+  }>({});
   const {
     createSession,
     getSessionByDate,
     session: selectedSession,
   } = useSession();
+  const { fetchSessionExercises, addMultipleExercisesToSession } =
+    useSessionExercise();
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
-  };
-
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
-
-  const handleSave = () => {
-    setIsEditing(false);
-    console.log("Saving changes...");
   };
 
   const toggleDropdown = () => {
@@ -69,19 +70,72 @@ export default function Index() {
     setExerciseDetailVisible(false);
   };
 
+  const handleAddExerciseToSession = (sessionId: string) => {
+    setCurrentSessionId(sessionId);
+    setAddExerciseDialogVisible(true);
+  };
+
+  const handleAddExercises = async (exerciseIds: string[]) => {
+    if (currentSessionId) {
+      try {
+        await addMultipleExercisesToSession(currentSessionId, exerciseIds);
+        // Reload session exercises for this session
+        await loadSessionExercises(currentSessionId);
+      } catch (error) {
+        console.error("Error adding exercises to session:", error);
+      }
+    }
+  };
+
+  const loadSessionExercises = useCallback(
+    async (sessionId: string) => {
+      try {
+        const exercises = await fetchSessionExercises(sessionId);
+        if (exercises) {
+          setSessionExercises((prev) => ({
+            ...prev,
+            [sessionId]: exercises,
+          }));
+        }
+        return exercises || [];
+      } catch (error) {
+        console.error("Error loading session exercises:", error);
+        return [];
+      }
+    },
+    [fetchSessionExercises],
+  );
+
+  // Remove the useEffect that depends on currentSessionExercises since we're handling it directly
+
   useEffect(() => {
     async function fetchSession() {
       await getSessionByDate(selectedDate.toLocaleDateString("en-CA"));
-      setDisplaySession(
-        Array.isArray(selectedSession)
-          ? selectedSession
-          : selectedSession
-            ? [selectedSession]
-            : [],
-      );
     }
     fetchSession();
-  }, [selectedDate]);
+  }, [selectedDate, getSessionByDate]);
+
+  useEffect(() => {
+    const sessions = Array.isArray(selectedSession)
+      ? selectedSession
+      : selectedSession
+        ? [selectedSession]
+        : [];
+    setDisplaySession(sessions);
+
+    // Load exercises for each session
+    const loadAllSessionExercises = async () => {
+      for (const session of sessions) {
+        if (session.id) {
+          await loadSessionExercises(session.id);
+        }
+      }
+    };
+
+    if (sessions.length > 0) {
+      loadAllSessionExercises();
+    }
+  }, [selectedSession, loadSessionExercises]);
 
   return (
     <ScrollView style={styles.container}>
@@ -147,15 +201,8 @@ export default function Index() {
             </View>
           </View>
         </View>
-
-        {isEditing && (
-          <View style={styles.editModeIndicator}>
-            <Text style={styles.editModeText}>✨ Edit Mode Active</Text>
-          </View>
-        )}
       </View>
 
-      {/* Sessions List */}
       <View style={styles.sessionsContainer}>
         {displaySession.length === 0 ? (
           <View style={styles.noSessionsContainer}>
@@ -172,29 +219,34 @@ export default function Index() {
             <View key={session.id} style={styles.sessionContainer}>
               <Text style={styles.sessionName}>{session.name}</Text>
 
-              {/* Check if session has exercises/data */}
-              {!session.exercises || session.exercises.length === 0 ? (
+              {!sessionExercises[session.id] ||
+              sessionExercises[session.id].length === 0 ? (
                 <TouchableOpacity
                   style={styles.addExerciseButton}
-                  onPress={() => {
-                    // Handle add exercise for this specific session
-                    console.log("Add exercise to session:", session.id);
-                  }}
+                  onPress={() => handleAddExerciseToSession(session.id)}
                 >
                   <Text style={styles.addExerciseButtonText}>Add Exercise</Text>
                 </TouchableOpacity>
               ) : (
                 <View style={styles.exercisesList}>
-                  {session.exercises.map((exercise: any, index: number) => (
-                    <TickCard
-                      key={index}
-                      title={exercise.title || "Exercise"}
-                      reps={exercise.reps || 0}
-                      sets={exercise.sets || 0}
-                      isCompleted={exercise.isCompleted || false}
-                      onPressCard={onPressCard}
-                    />
-                  ))}
+                  {sessionExercises[session.id].map(
+                    (sessionExercise: any, index: number) => (
+                      <TickCard
+                        key={sessionExercise.id || index}
+                        title={sessionExercise.Exercise?.name || "Exercise"}
+                        reps={sessionExercise.reps || 0}
+                        sets={sessionExercise.sets || 0}
+                        isCompleted={sessionExercise.completed || false}
+                        onPressCard={onPressCard}
+                      />
+                    ),
+                  )}
+                  <TouchableOpacity
+                    style={[styles.addExerciseButton, styles.addMoreButton]}
+                    onPress={() => handleAddExerciseToSession(session.id)}
+                  >
+                    <Text style={styles.addExerciseButtonText}>+ Add More</Text>
+                  </TouchableOpacity>
                 </View>
               )}
             </View>
@@ -215,6 +267,13 @@ export default function Index() {
         visible={createDialogVisible}
         onClose={closeCreateDialog}
         onCreateSession={handleCreateSession}
+      />
+
+      <AddExerciseDialog
+        visible={addExerciseDialogVisible}
+        onClose={() => setAddExerciseDialogVisible(false)}
+        onAddExercises={handleAddExercises}
+        sessionId={currentSessionId || ""}
       />
     </ScrollView>
   );
@@ -354,6 +413,7 @@ const styles = StyleSheet.create({
   },
   sessionsContainer: {
     padding: 16,
+    zIndex: -1,
   },
   noSessionsContainer: {
     padding: 20,
@@ -387,6 +447,7 @@ const styles = StyleSheet.create({
     shadowRadius: 0,
     elevation: 8,
     overflow: "hidden",
+    zIndex: -1,
   },
   sessionName: {
     fontSize: 20,
@@ -419,6 +480,10 @@ const styles = StyleSheet.create({
     textShadowColor: "#000000",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 0,
+  },
+  addMoreButton: {
+    backgroundColor: "#ff9f43",
+    margin: 8,
   },
   exercisesList: {
     padding: 16,
