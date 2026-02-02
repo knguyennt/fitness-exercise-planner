@@ -14,7 +14,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import CalendarComponent from "../../../components/calendar";
+import Calendar from "../../../components/calendar";
 import TickCard from "../../../components/tick-card";
 
 export default function Index() {
@@ -163,7 +163,7 @@ export default function Index() {
         </Text>
       </View>
 
-      <CalendarComponent onDateSelect={handleDateSelect} />
+      <Calendar onDateSelect={handleDateSelect} />
 
       <View style={styles.selectedDateContainer}>
         <View style={styles.dateHeader}>
@@ -228,6 +228,7 @@ export default function Index() {
                         key={sessionExercise.id || index}
                         title={sessionExercise.Exercise?.name || "Exercise"}
                         imageSource={sessionExercise.Exercise?.image_url || ""}
+                        notes={sessionExercise.notes}
                         reps={sessionExercise.Exercise?.reps || 0}
                         sets={sessionExercise.Exercise?.sets || 0}
                         isCompleted={sessionExercise.completed || false}
@@ -260,6 +261,8 @@ export default function Index() {
       >
         <ExerciseDetail
           exerciseName={selectedSessionExercises.Exercise?.name || ""}
+          description={selectedSessionExercises.Exercise?.description || ""}
+          notes={selectedSessionExercises.notes || ""}
           imageUrl={selectedSessionExercises.Exercise?.image_url || ""}
           videoUrl={selectedSessionExercises.Exercise?.video_url || ""}
           onClose={closeExerciseDetail}

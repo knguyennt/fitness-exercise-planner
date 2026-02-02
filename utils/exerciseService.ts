@@ -4,6 +4,7 @@ export interface Exercise {
   id?: string;
   created_at?: string;
   name: string;
+  description?: string;
   image_url: string;
   video_url: string;
   user_id?: string;
@@ -11,6 +12,7 @@ export interface Exercise {
 
 export interface CreateExerciseData {
   name: string;
+  description?: string;
   image_url: string;
   video_url: string;
 }

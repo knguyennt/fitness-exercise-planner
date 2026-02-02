@@ -103,6 +103,7 @@ export default function Exercise() {
       >
         <ExerciseDetail
           exerciseName={selectedExercise?.name}
+          description={selectedExercise?.description}
           imageUrl={selectedExercise?.image_url}
           videoUrl={selectedExercise?.video_url}
           onClose={closeExerciseDetail}

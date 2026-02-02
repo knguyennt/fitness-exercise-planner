@@ -128,16 +128,20 @@ export default function ExerciseDetail({
           ]}
         >
           {/* Description */}
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.sectionTitle}>DESCRIPTION</Text>
-            <Text style={styles.descriptionText}>{description}</Text>
-          </View>
+          {description && (
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.sectionTitle}>DESCRIPTION</Text>
+              <Text style={styles.descriptionText}>{description}</Text>
+            </View>
+          )}
 
           {/* Notes */}
-          <View style={styles.notesContainer}>
-            <Text style={styles.sectionTitle}>NOTES</Text>
-            <Text style={styles.notesText}>{notes}</Text>
-          </View>
+          {notes && (
+            <View style={styles.notesContainer}>
+              <Text style={styles.sectionTitle}>SESSION NOTES</Text>
+              <Text style={styles.notesText}>{notes}</Text>
+            </View>
+          )}
 
           {/* Video Section */}
           <View style={styles.videoContainer}>

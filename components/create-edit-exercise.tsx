@@ -14,6 +14,7 @@ interface Exercise {
   id?: string;
   created_at?: string;
   name: string;
+  description?: string;
   image_url: string;
   video_url: string;
   user_id?: string;
@@ -36,6 +37,7 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
 }) => {
   const [formData, setFormData] = useState<Exercise>({
     name: "",
+    description: "",
     image_url: "",
     video_url: "",
   });
@@ -46,6 +48,7 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
     } else {
       setFormData({
         name: "",
+        description: "",
         image_url: "",
         video_url: "",
       });
@@ -72,6 +75,7 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
   const handleCancel = () => {
     setFormData({
       name: "",
+      description: "",
       image_url: "",
       video_url: "",
     });
@@ -114,6 +118,22 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
                   onChangeText={(value) => handleInputChange("name", value)}
                   placeholder="Enter exercise name"
                   placeholderTextColor="#666"
+                />
+              </View>
+
+              {/* Description */}
+              <View style={styles.fieldContainer}>
+                <Text style={styles.label}>DESCRIPTION</Text>
+                <TextInput
+                  style={[styles.input, styles.textArea]}
+                  value={formData.description || ""}
+                  onChangeText={(value) =>
+                    handleInputChange("description", value)
+                  }
+                  placeholder="Enter exercise description"
+                  placeholderTextColor="#666"
+                  multiline
+                  numberOfLines={3}
                 />
               </View>
 
@@ -250,6 +270,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 0,
     elevation: 4,
+  },
+  textArea: {
+    height: 80,
+    textAlignVertical: "top",
   },
   buttonContainer: {
     flexDirection: "row",

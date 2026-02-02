@@ -6,6 +6,7 @@ interface TickCardProps {
   imageSource?: any;
   reps?: number;
   sets?: number;
+  notes?: string;
   isCompleted?: boolean;
   showTick?: boolean;
   allowEdit?: boolean;
@@ -20,6 +21,7 @@ export default function TickCard({
   imageSource,
   reps = 0,
   sets = 0,
+  notes,
   isCompleted = false,
   showTick = true,
   onToggleComplete,
@@ -70,6 +72,11 @@ export default function TickCard({
 
         <View style={styles.contentContainer}>
           <Text style={styles.title}>{title}</Text>
+          {notes && (
+            <Text style={styles.notes} numberOfLines={2}>
+              {notes}
+            </Text>
+          )}
 
           <View style={styles.statsRow}>
             {reps > 0 && (
@@ -171,6 +178,13 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textTransform: "uppercase",
     letterSpacing: 1,
+  },
+  notes: {
+    fontSize: 12,
+    color: "#666666",
+    fontStyle: "italic",
+    marginBottom: 8,
+    lineHeight: 16,
   },
   statsRow: {
     flexDirection: "row",

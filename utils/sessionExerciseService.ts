@@ -8,6 +8,7 @@ export interface SessionExercise {
   reps?: number;
   break?: number;
   time?: number;
+  notes?: string;
   created_at?: string;
 }
 
@@ -18,12 +19,14 @@ export interface CreateSessionExerciseData {
   reps?: number;
   break?: number;
   time?: number;
+  notes?: string;
 }
 
 export interface SessionExerciseWithDetails extends SessionExercise {
   Exercise?: {
     id: string;
     name: string;
+    description?: string;
     image_url: string;
     video_url: string;
   };
@@ -42,6 +45,7 @@ export const sessionExerciseService = {
           Exercise (
             id,
             name,
+            description,
             image_url,
             video_url
           )
