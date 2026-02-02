@@ -37,8 +37,11 @@ export default function Index() {
     getSessionByDate,
     session: selectedSession,
   } = useSession();
-  const { fetchSessionExercises, addMultipleExercisesToSession } =
-    useSessionExercise();
+  const {
+    fetchSessionExercises,
+    addMultipleExercisesToSession,
+    removeExerciseFromSession,
+  } = useSessionExercise();
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
@@ -83,11 +86,21 @@ export default function Index() {
     if (currentSessionId) {
       try {
         await addMultipleExercisesToSession(currentSessionId, exerciseIds);
-        // Reload session exercises for this session
         await loadSessionExercises(currentSessionId);
       } catch (error) {
         console.error("Error adding exercises to session:", error);
       }
+    }
+  };
+
+  const onDeleteSessionExercise = async (exercise: any) => {
+    try {
+      if (exercise.Exercise?.id) {
+        await removeExerciseFromSession(exercise.Exercise?.id);
+        await loadSessionExercises(exercise.session_id);
+      }
+    } catch (error) {
+      console.error("Error deleting session exercise:", error);
     }
   };
 
@@ -176,30 +189,6 @@ export default function Index() {
                     <Ionicons name="add" size={16} color="#000000" />
                     <Text style={styles.dropdownText}>Create Session</Text>
                   </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.dropdownItem}
-                    onPress={() => handleDropdownAction("edit")}
-                  >
-                    <Ionicons name="pencil" size={16} color="#000000" />
-                    <Text style={styles.dropdownText}>Edit Workout</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.dropdownItem}
-                    onPress={() => handleDropdownAction("duplicate")}
-                  >
-                    <Ionicons name="copy-outline" size={16} color="#000000" />
-                    <Text style={styles.dropdownText}>Duplicate Day</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    style={styles.dropdownItem}
-                    onPress={() => handleDropdownAction("delete")}
-                  >
-                    <Ionicons name="trash-outline" size={16} color="#000000" />
-                    <Text style={styles.dropdownText}>Delete Workout</Text>
-                  </TouchableOpacity>
                 </View>
               )}
             </View>
@@ -243,6 +232,10 @@ export default function Index() {
                         sets={sessionExercise.Exercise?.sets || 0}
                         isCompleted={sessionExercise.completed || false}
                         onPressCard={() => onPressCard(sessionExercise)}
+                        onDelete={() =>
+                          onDeleteSessionExercise(sessionExercise)
+                        }
+                        allowEdit={false}
                       />
                     ),
                   )}

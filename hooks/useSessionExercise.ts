@@ -145,14 +145,12 @@ export const useSessionExercise = (): UseSessionExerciseReturn => {
     [],
   );
 
-  // Remove exercise from session
   const removeExerciseFromSession = useCallback(async (id: string) => {
     try {
       setLoading(true);
       setError(null);
       await sessionExerciseService.removeExerciseFromSession(id);
 
-      // Update local state
       setSessionExercises((prev) =>
         prev.filter((exercise) => exercise.id !== id),
       );

@@ -136,7 +136,7 @@ export const sessionExerciseService = {
       const { error } = await supabase
         .from("SessionExercise")
         .delete()
-        .eq("id", id);
+        .eq("exercise_id", id);
 
       if (error) {
         throw error;

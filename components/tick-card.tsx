@@ -8,6 +8,7 @@ interface TickCardProps {
   sets?: number;
   isCompleted?: boolean;
   showTick?: boolean;
+  allowEdit?: boolean;
   onToggleComplete?: (isCompleted: boolean) => void;
   onPressCard?: () => void;
   onEdit?: () => void;
@@ -25,6 +26,7 @@ export default function TickCard({
   onPressCard,
   onEdit,
   onDelete,
+  allowEdit = true,
 }: TickCardProps) {
   const [checked, setChecked] = useState(isCompleted);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -102,9 +104,11 @@ export default function TickCard({
 
       {showDropdown && (
         <View style={styles.dropdown}>
-          <TouchableOpacity style={styles.dropdownItem} onPress={handleEdit}>
-            <Text style={styles.dropdownText}>Edit</Text>
-          </TouchableOpacity>
+          {allowEdit && (
+            <TouchableOpacity style={styles.dropdownItem} onPress={handleEdit}>
+              <Text style={styles.dropdownText}>Edit</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.dropdownItem} onPress={handleDelete}>
             <Text style={styles.dropdownText}>Delete</Text>
           </TouchableOpacity>
