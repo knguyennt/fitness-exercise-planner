@@ -19,6 +19,9 @@ import TickCard from "../../../components/tick-card";
 
 export default function Index() {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [selectedSessionExercises, setSelectedSessionExercises] = useState(
+    {} as SessionExerciseWithDetails,
+  );
   const [exerciseDetailVisible, setExerciseDetailVisible] = useState(false);
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [createDialogVisible, setCreateDialogVisible] = useState(false);
@@ -63,7 +66,8 @@ export default function Index() {
     setCreateDialogVisible(false);
   };
 
-  const onPressCard = () => {
+  const onPressCard = (sessionExercise: SessionExerciseWithDetails) => {
+    setSelectedSessionExercises(sessionExercise);
     setExerciseDetailVisible(true);
   };
   const closeExerciseDetail = () => {
@@ -234,10 +238,11 @@ export default function Index() {
                       <TickCard
                         key={sessionExercise.id || index}
                         title={sessionExercise.Exercise?.name || "Exercise"}
-                        reps={sessionExercise.reps || 0}
-                        sets={sessionExercise.sets || 0}
+                        imageSource={sessionExercise.Exercise?.image_url || ""}
+                        reps={sessionExercise.Exercise?.reps || 0}
+                        sets={sessionExercise.Exercise?.sets || 0}
                         isCompleted={sessionExercise.completed || false}
-                        onPressCard={onPressCard}
+                        onPressCard={() => onPressCard(sessionExercise)}
                       />
                     ),
                   )}
@@ -260,7 +265,12 @@ export default function Index() {
         transparent={true}
         onRequestClose={closeExerciseDetail}
       >
-        <ExerciseDetail />
+        <ExerciseDetail
+          exerciseName={selectedSessionExercises.Exercise?.name || ""}
+          imageUrl={selectedSessionExercises.Exercise?.image_url || ""}
+          videoUrl={selectedSessionExercises.Exercise?.video_url || ""}
+          onClose={closeExerciseDetail}
+        />
       </Modal>
 
       <CreateSessionDialog

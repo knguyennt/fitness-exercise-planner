@@ -30,7 +30,6 @@ export interface SessionExerciseWithDetails extends SessionExercise {
 }
 
 export const sessionExerciseService = {
-  // Get all exercises for a specific session
   async getSessionExercises(
     sessionId: string,
   ): Promise<SessionExerciseWithDetails[]> {

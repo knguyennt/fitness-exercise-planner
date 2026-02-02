@@ -40,8 +40,6 @@ export const sessionService = {
       if (error) {
         throw error;
       }
-
-      console.log("data from getSessionByDate:", data);
       return data || [];
     } catch (error) {
       console.error("Error fetching sessions by date:", error);
