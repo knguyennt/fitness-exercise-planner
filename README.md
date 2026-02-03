@@ -1,4 +1,7 @@
 # Fitness Exercise Planner
+<div align="center">
+  <img src="assets/images/adaptive-icon.png" alt="Fitness Exercise Planner Icon" width="150"/>
+</div>
 
 ## Overview
 
