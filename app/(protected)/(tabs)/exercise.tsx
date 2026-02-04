@@ -56,6 +56,11 @@ export default function Exercise() {
     setEditExerciseVisible(false);
   };
 
+  const onDeleteExercise = async (exerciseId: string) => {
+    await deleteExercise(exerciseId);
+    await getExerciseData();
+  };
+
   useEffect(() => {
     getExerciseData();
   }, []);
@@ -82,7 +87,7 @@ export default function Exercise() {
               showTick={false}
               isCompleted={false}
               onPressCard={() => onPressCard(exercise)}
-              onDelete={() => deleteExercise(exercise?.id)}
+              onDelete={() => onDeleteExercise(exercise?.id)}
               onEdit={() => onPressEdit(exercise)}
             />
           ))}
