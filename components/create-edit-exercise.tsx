@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import {
     Alert,
+    KeyboardAvoidingView,
     Modal,
+    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -87,13 +89,17 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
       visible={visible}
       animationType="slide"
       transparent={true}
-      statusBarTranslucent
+      onRequestClose={handleCancel}
     >
-      <View style={styles.overlay}>
+      <KeyboardAvoidingView
+        style={styles.overlay}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
         <View style={styles.popup}>
           <ScrollView
             style={styles.scrollView}
             showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
           >
             {/* Banner */}
             <View
@@ -190,7 +196,7 @@ const CreateEditExercise: React.FC<CreateEditExerciseProps> = ({
             </View>
           </ScrollView>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 };
@@ -206,7 +212,9 @@ const styles = StyleSheet.create({
   popup: {
     backgroundColor: "#FFFFFF",
     width: "100%",
-    maxHeight: "90%",
+    maxWidth: 500,
+    maxHeight: "85%",
+    minHeight: 600,
     borderWidth: 4,
     borderColor: "#000000",
     shadowColor: "#000000",
