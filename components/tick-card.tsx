@@ -59,9 +59,9 @@ export default function TickCard({
         <View style={styles.imageContainer}>
           {imageSource ? (
             <Image
-              source={imageSource}
+              source={{ uri: imageSource }}
               style={styles.image}
-              resizeMode="cover"
+              resizeMode="stretch"
             />
           ) : (
             <View style={styles.placeholderImage}>

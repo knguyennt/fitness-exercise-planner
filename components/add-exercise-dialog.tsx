@@ -52,7 +52,7 @@ export default function AddExerciseDialog({
   };
 
   const renderExerciseItem = ({ item }: { item: Exercise }) => {
-    if (!item.id) return null; // Skip items without valid IDs
+    if (!item.id) return null;
 
     const isSelected = selectedExercises.includes(item.id);
 
@@ -103,7 +103,6 @@ export default function AddExerciseDialog({
             isTablet && styles.modalContainerTablet,
           ]}
         >
-          {/* Header */}
           <View style={styles.header}>
             <Text style={styles.title}>SELECT EXERCISES</Text>
             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
@@ -111,7 +110,6 @@ export default function AddExerciseDialog({
             </TouchableOpacity>
           </View>
 
-          {/* Exercise List */}
           <View style={styles.listContainer}>
             {loading ? (
               <View style={styles.loadingContainer}>
@@ -184,7 +182,7 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderWidth: 6,
     borderColor: "#000",
-    maxHeight: "80%",
+    minHeight: 600,
     width: "90%",
     shadowColor: "#000",
     shadowOffset: { width: 6, height: 6 },
